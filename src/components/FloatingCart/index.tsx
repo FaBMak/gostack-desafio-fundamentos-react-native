@@ -1,8 +1,10 @@
+/* eslint-disable no-plusplus */
 import React, { useState, useMemo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import { getElementError } from '@testing-library/react-native';
 import {
   Container,
   CartPricing,
@@ -24,15 +26,24 @@ const FloatingCart: React.FC = () => {
   const navigation = useNavigation();
 
   const cartTotal = useMemo(() => {
-    // TODO RETURN THE SUM OF THE PRICE FROM ALL ITEMS IN THE CART
+    const somaCart = products.reduce((accumulator, element) => {
+      let { quantity } = element;
+      let sumProductQuantity = 0;
+      while (quantity > 0) {
+        sumProductQuantity += element.price;
+        --quantity;
+      }
+      return accumulator + sumProductQuantity;
+    }, 0);
 
-    return formatValue(0);
+    return formatValue(somaCart);
   }, [products]);
 
   const totalItensInCart = useMemo(() => {
-    // TODO RETURN THE SUM OF THE QUANTITY OF THE PRODUCTS IN THE CART
-
-    return 0;
+    const totalProducts = products.reduce((accumulator, element) => {
+      return accumulator + element.quantity;
+    }, 0);
+    return totalProducts;
   }, [products]);
 
   return (
